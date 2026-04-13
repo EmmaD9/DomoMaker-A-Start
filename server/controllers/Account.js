@@ -1,5 +1,5 @@
 const models = require('../models');
-const {AccountModel} = models.Account;
+const {Account} = models.Account;
 
 const loginPage = (req, res) => {
     return res.render('login');
@@ -22,11 +22,11 @@ const login = (req, res) => {
         return res.status(400).json({ error: 'All fields are required!' });
     }
 
-    return AccountModel.authenticate(username, pass, (err, account) => {
+    return Account.authenticate(username, pass, (err, account) => {
         if (err || !account) {
             return res.status(401).json({ error: 'Wrong username or password!' });
         }
-        req.session.account = account;
+        req.session.account = Account.toAPI(account);
         return res.json({ redirect: '/maker' });
     });
 };
@@ -45,9 +45,10 @@ const signup = async (req, res) => {
     }
 
     try {
-        const hash = await AccountModel.generateHash(pass1);
-        const newAccount = new AccountModel({ username, password: hash });
+        const hash = await Account.generateHash(pass1);
+        const newAccount = new Account({ username, password: hash });
         await newAccount.save();
+        req.session.account = Account.toAPI(newAccount);
         return res.json({ redirect: '/maker' });
     } catch (err) {
         console.log(err);
