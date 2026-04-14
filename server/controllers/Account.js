@@ -1,5 +1,5 @@
 const models = require('../models');
-const {Account} = models.Account;
+const Account = models.Account.AccountModel;
 
 const loginPage = (req, res) => {
     return res.render('login');
