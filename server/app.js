@@ -8,8 +8,10 @@ const mongoose = require('mongoose');
 const expressHandlebars = require('express-handlebars');
 const helmet = require('helmet');
 const session = require('express-session');
-const RedisStore = require('connect-redis');
-const redis = require('redis');
+// const RedisStore = require('connect-redis');
+// const redis = require('redis');
+const RedisStore = require('connect-redis').default;
+const Redis = require('ioredis');
 
 
 const router = require('./router.js');
@@ -25,7 +27,7 @@ mongoose.connect(dbURI).catch((err) => {
 });
 
 const redisClient = redis.createClient({
-    url: process.env.REDIS_URL,
+    url: process.env.REDISCLOUD_URL,
 });
 redisClient.on('error', (err) => {
     console.log('Redis Client Error', err);
